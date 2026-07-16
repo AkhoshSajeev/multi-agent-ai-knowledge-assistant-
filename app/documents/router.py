@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, File, UploadFile
+from fastapi import APIRouter, BackgroundTasks, Depends, File, UploadFile
 from sqlalchemy.orm import Session
 
 from app.auth.dependencies import get_current_user
@@ -15,6 +15,7 @@ router = APIRouter()
     response_model=DocumentResponse,
 )
 def upload_document(
+    background_tasks: BackgroundTasks,
     file: UploadFile = File(...),
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
@@ -23,6 +24,7 @@ def upload_document(
         db=db,
         file=file,
         user_id=current_user.id,
+        background_tasks=background_tasks,
     )
 
     return document

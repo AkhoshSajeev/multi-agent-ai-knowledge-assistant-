@@ -8,6 +8,8 @@ class Settings(BaseSettings):
 
     ALGORITHM: str = "HS256"
 
+    GEMINI_API_KEY: str
+
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
 
     model_config = SettingsConfigDict(

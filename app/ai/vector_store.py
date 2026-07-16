@@ -1,19 +1,27 @@
 import chromadb
 
-client = chromadb.PersistentClient(path="chroma_db")
+from .embeddings import create_embeddings
+
+client = chromadb.PersistentClient(
+    path="chroma_db"
+)
 
 collection = client.get_or_create_collection(
     name="documents"
 )
 
-from .embeddings import create_embeddings
-
 
 def store_document(
     document_id: int,
-    chunks: list[str],
+    chunks,
 ):
-    embeddings = create_embeddings(chunks)
+    # Extract text from LangChain Document objects
+    texts = [
+        doc.page_content
+        for doc in chunks
+    ]
+
+    embeddings = create_embeddings(texts)
 
     ids = [
         f"{document_id}_{i}"
@@ -22,13 +30,14 @@ def store_document(
 
     collection.add(
         ids=ids,
-        documents=chunks,
+        documents=texts,
         embeddings=embeddings,
         metadatas=[
             {
+                **doc.metadata,
                 "document_id": document_id,
                 "chunk": i,
             }
-            for i in range(len(chunks))
+            for i, doc in enumerate(chunks)
         ],
     )

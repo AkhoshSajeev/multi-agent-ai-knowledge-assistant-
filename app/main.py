@@ -3,6 +3,7 @@ from app.documents.router import router as document_router
 from app.auth.router import router as auth_router
 from app.db.database import Base, engine
 from app.models.user import User
+from app.chat.router import router as chat_router
 
 
 app = FastAPI(
@@ -25,8 +26,10 @@ app.include_router(
 def health():
     return {"status": "healthy"}
 
+
+
 app.include_router(
-    document_router,
-    prefix="/api/v1/documents",
-    tags=["Documents"],
+    chat_router,
+    prefix="/api/v1/chat",
+    tags=["Chat"],
 )

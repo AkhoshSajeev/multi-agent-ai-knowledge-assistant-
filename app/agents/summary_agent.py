@@ -1,5 +1,7 @@
 from app.agents.base import BaseAgent
-from app.ai.service import answer_question
+from app.tools.document_search import DocumentSearchTool
+from app.ai.llm import ask_llm
+from app.ai.prompts import SUMMARY_PROMPT
 
 
 class SummaryAgent(BaseAgent):
@@ -9,21 +11,18 @@ class SummaryAgent(BaseAgent):
 
     def __init__(self):
         super().__init__("Summary Agent")
+        self.search_tool = DocumentSearchTool()
 
     def run(self, question: str) -> str:
 
-        prompt = f"""
-You are an expert summarizer.
+        context = self.search_tool.run(question)
 
-Summarize the uploaded document clearly using:
+        if not context:
+            return "No document was found to summarize."
 
-- Main topic
-- Important points
-- Key technologies or concepts
-- Final conclusion
+        prompt = SUMMARY_PROMPT.format(
+            context=context,
+            question=question,
+        )
 
-User request:
-{question}
-"""
-
-        return self.ask_llm(prompt)
+        return ask_llm(prompt)

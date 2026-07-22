@@ -1,39 +1,49 @@
 from app.ai.llm import model
 
-def classify_question(question: str) -> str:
+VALID_AGENTS = {
+    "rag",
+    "summary",
+    "interview",
+    "quiz",
+    "translator",
+}
+
+
+def classify(question: str) -> str:
+
     prompt = f"""
 You are an AI router.
 
-Choose ONLY ONE of these agents.
+Available agents:
 
-- rag
-- summary
-- interview
+rag
+summary
+interview
+quiz
+translator
 
-Rules:
+Choose the best agent.
 
-rag:
-- answer questions
-- retrieve information
-- explain concepts
-
-summary:
-- summarize
-- overview
-- brief
-- condense
-
-interview:
-- interview questions
-- mock interview
-- recruiter
-
-Return ONLY the agent name.
+Return ONLY one word.
 
 Question:
+
 {question}
 """
 
     response = model.generate_content(prompt)
 
-    return response.text.strip().lower()
+    agent = response.text.strip().lower()
+
+    # Remove punctuation
+    agent = (
+        agent.replace(".", "")
+             .replace(",", "")
+             .replace(":", "")
+             .replace('"', "")
+    )
+
+    if agent not in VALID_AGENTS:
+        return "rag"
+
+    return agent

@@ -1,4 +1,4 @@
-from app.agents.classifier import classify_question
+from app.agents.classifier import classify
 from app.agents.rag_agent import RAGAgent
 from app.agents.summary_agent import SummaryAgent
 from app.agents.interview_agent import InterviewAgent
@@ -13,7 +13,7 @@ class RouterAgent:
 
     def run(self, question: str):
 
-        agent = classify_question(question)
+        agent = classify(question)
 
         print("Selected:", agent)
 

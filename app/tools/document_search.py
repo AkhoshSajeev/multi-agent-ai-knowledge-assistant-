@@ -7,5 +7,6 @@ class DocumentSearchTool(BaseTool):
     def __init__(self):
         super().__init__("Document Search")
 
-    def run(self, question: str) -> str:
+    def run(self, question: str):
+
         return retrieve_context(question)

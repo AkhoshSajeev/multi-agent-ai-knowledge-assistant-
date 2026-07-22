@@ -11,30 +11,14 @@ model = genai.GenerativeModel(
 )
 
 
-def ask_llm(
-    question: str,
-    context: str,
-) -> str:
-
-    prompt = f"""
-You are an AI Knowledge Assistant.
-
-Rules:
-1. Answer only from the provided context.
-2. Do not invent information.
-3. If the answer is missing, reply:
-   "I couldn't find that information in the uploaded documents."
-4. Keep answers clear and concise.
-
-Context:
-{context}
-
-Question:
-{question}
-"""
+def ask_llm(prompt: str) -> str:
+    """
+    Send a prompt to Gemini.
+    """
 
     try:
-      response = model.generate_content(prompt)
-      return response.text
+        response = model.generate_content(prompt)
+        return response.text
+
     except Exception as e:
-      return f"Error communicating with Gemini: {str(e)}"
+        return f"Error communicating with Gemini: {e}"

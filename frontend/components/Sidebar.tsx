@@ -66,25 +66,25 @@ export default function Sidebar() {
     className="flex items-center justify-between rounded-lg border bg-white p-3 shadow-sm"
   >
 
-    <div>
+   <div className="flex-1 min-w-0">
 
-      <h3 className="font-medium">
-        {doc.original_filename}
-      </h3>
+  <h3 className="font-medium truncate">
+    {doc.original_filename}
+  </h3>
 
-      <p
-        className={`text-sm ${
-          doc.status === "completed"
-            ? "text-green-600"
-            : doc.status === "processing"
-            ? "text-yellow-600"
-            : "text-red-600"
-        }`}
-      >
-        {doc.status}
-      </p>
+  <p
+    className={`text-sm ${
+      doc.status === "completed"
+        ? "text-green-600"
+        : doc.status === "processing"
+        ? "text-yellow-600"
+        : "text-red-600"
+    }`}
+  >
+    {doc.status}
+  </p>
 
-    </div>
+</div>
 
     <DeleteButton
       documentId={doc.id}

@@ -1,31 +1,33 @@
 from app.agents.base import BaseAgent
-from app.ai.service import answer_question
+from app.tools.document_search import DocumentSearchTool
+from app.ai.prompts import INTERVIEW_PROMPT
+from app.ai.llm import ask_llm
 
 
 class InterviewAgent(BaseAgent):
-    """
-    Generates interview questions
-    from uploaded documents.
-    """
 
     def __init__(self):
         super().__init__("Interview Agent")
+        self.search_tool = DocumentSearchTool()
 
-    def run(self, question: str) -> str:
+    def run(
+        self,
+        question: str,
+        count: int = 10,
+    ) -> str:
 
-        prompt = f"""
-You are an experienced technical interviewer.
+        context = self.search_tool.run(question)
 
-Using the uploaded document, generate interview questions.
+        if not context:
+            return (
+                "I couldn't find any relevant information "
+                "in the uploaded documents."
+            )
 
-Requirements:
-- Beginner questions
-- Intermediate questions
-- Advanced questions
-- Include expected topics the interviewer might explore
+        prompt = INTERVIEW_PROMPT.format(
+            context=context,
+            question=question,
+            count=count,
+        )
 
-User request:
-{question}
-"""
-
-        return self.ask_llm(prompt)
+        return ask_llm(prompt)
